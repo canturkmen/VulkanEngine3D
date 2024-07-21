@@ -14,6 +14,9 @@ typedef struct internal_state {
     HWND hwnd;
 } internal_state;
 
+static f64 clock_frequency;
+static LARGE_INTEGER start_time;
+
 LRESULT CALLBACK win32_process_message(HWND hwnd, u32 msg, WPARAM w_param, LPARAM l_param);
 
 b8 plaform_startup(
@@ -49,7 +52,7 @@ b8 plaform_startup(
         return FALSE;
     }
 
-    // Create window 
+    // Create window.
 
     u32 client_x = x;
     u32 client_y = y;
@@ -78,7 +81,7 @@ b8 plaform_startup(
     window_width += border_rect.right - border_rect.left;
     window_height += border_rect.bottom - border_rect. top;
 
-    HWND handle = CreateWindowXA(
+    HWND handle = CreateWindowExA(
         window_ex_style, "vulkan_engine_3D_window_class", application_name,
         window_style, window_x, window_y, window_width, window_height,
         0, 0, state->h_instance, 0); 
@@ -96,6 +99,11 @@ b8 plaform_startup(
     b32 should_activate = 1; // TODO: if the window should not accept input, this should be false
     i32 show_window_command_flags = should_activate ? SW_SHOW : SW_SHOWNOACTIVATE;
     ShowWindow(state->hwnd, show_window_command_flags);
+
+    LARGE_INTEGER frequency;
+    QueryPerformanceFrequency(&frequency);
+    clock_frequency = 1.0 / (f64)frequency.QuadPart;
+    QueryPerformanceCounter(&start_time);
 
     return TRUE;
 }
@@ -127,7 +135,7 @@ void* platform_allocate(u64 size, b8 aligned)
     return malloc(size);
 }
 
-void* platform_free(void* block, b8 aligned)
+void platform_free(void* block, b8 aligned)
 {
     free(block);
 }
@@ -139,7 +147,7 @@ void* platform_zero_memory(void* block, u64 size)
 
 void* platform_copy_memory(void* dest, const void* source, u64 size)
 {
-    return memcpy(dest, source, size)
+    return memcpy(dest, source, size);
 }
 
 void* platform_set_memory(void* dest, i32 value, u64 size)
@@ -147,6 +155,111 @@ void* platform_set_memory(void* dest, i32 value, u64 size)
     return memset(dest, value, size);
 }
 
+void platform_console_write(const char* message, u8 colour)
+{
+    HANDLE console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
+    // FATAL, ERROR, WARN, INFO, DEBUG, TRACE
+    static u8 levels[6] = {64, 4, 6, 2, 1, 8};
+    SetConsoleTextAttribute(console_handle, levels[colour]);
+    OutputDebugStringA(message);
+    u64 length = strlen(message);
+    LPDWORD number_written = 0;
+    WriteConsoleA(GetStdHandle(STD_OUTPUT_HANDLE), message, (DWORD)length, number_written, 0);
+}
+
+void platform_console_write_error(const char* message, u8 colour)
+{
+    HANDLE error_handle = GetStdHandle(STD_ERROR_HANDLE);
+    // FATAL, ERROR, WARN, INFO, DEBUG, TRACE
+    static u8 levels[6] = {64, 4, 6, 2, 1, 8};
+    SetConsoleTextAttribute(error_handle, levels[colour]);
+    OutputDebugStringA(message);
+    u64 length = strlen(message);
+    LPDWORD number_written = 0;
+    WriteConsoleA(GetStdHandle(STD_ERROR_HANDLE), message, (DWORD)length, number_written, 0);
+}
+
+f64 platform_get_absolute_time() 
+{
+    LARGE_INTEGER now_time;
+    QueryPerformanceCounter(&now_time);
+    return (f64)now_time.QuadPart * clock_frequency;
+}
+
+void platform_sleep(u64 ms)
+{
+    Sleep(ms);
+}
+
+LRESULT CALLBACK win32_process_message(HWND hwnd, u32 msg, WPARAM w_param, LPARAM l_param)
+{
+    switch(msg)
+    {
+        case WM_ERASEBKGND:
+            // Notify the OS that erasing will be handled by the application to prevent flicker.
+            return 1;
+        case WM_CLOSE:
+            // TODO: Fire an event for the application to quit.
+            return 0;
+        case WM_DESTROY:
+        {
+            PostQuitMessage(0);
+            return 0;
+        }
+        case WM_SIZE: 
+        {
+            // Get the updated size.
+            // RECT r;
+            // GetClientRect(hwnd, &r);
+            // u32 width = r.right - r.left;
+            // u32 height = r.bottom - r.top;
+
+            // TODO: Fire an event for window resize.
+        }
+        break;  
+        case WM_KEYDOWN:
+        case WM_SYSKEYDOWN:
+        case WM_KEYUP:
+        case WM_SYSKEYUP:
+        {
+            // Key pressed/released.
+            // b8 pressed = (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN);
+            // TODO: Input processing.
+        }
+        break;
+        case WM_MOUSEMOVE:
+        {
+            // Mouse move.
+            // i32 x_position = GET_X_LPARAM(l_param);
+            // i32 y_position = GET_Y_LPARAM(l_param); 
+            // TODO: Input processing.
+        }  
+        break;
+        case WM_MOUSEWHEEL:
+        {
+            // i32 z_delta = GET_WHEEL_DELTA_WPARAM(w_param);
+            // if(z_delta != 0)
+            // {
+            //     // Flatten the input to an OS independent (-1, 1)
+            //     z_delta = (z_delta < 0) ? -1 : 1;
+            // }
+            // TODO: Input processing.
+        }
+        break;
+        case WM_LBUTTONDOWN:
+        case WM_MBUTTONDOWN:
+        case WM_RBUTTONDOWN:
+        case WM_LBUTTONUP:
+        case WM_MBUTTONUP:
+        case WM_RBUTTONUP: 
+        {
+            // b8 pressed = (msg == WM_LBUTTONDOWN || msg == WM_MBUTTONDOWN || msg == WM_RBUTTONDOWN);
+            // TODO: Input processing.
+        }
+        break;
+    }
+
+    return DefWindowProcA(hwnd, msg, w_param, l_param);
+}
 
 #endif
-
