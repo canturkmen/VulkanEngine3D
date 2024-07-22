@@ -19,7 +19,7 @@ static LARGE_INTEGER start_time;
 
 LRESULT CALLBACK win32_process_message(HWND hwnd, u32 msg, WPARAM w_param, LPARAM l_param);
 
-b8 plaform_startup(
+b8 platform_startup(
     platform_state* plat_state,
     const char* application_name,
     i32 x,

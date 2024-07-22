@@ -14,10 +14,10 @@ int main(void)
     VETRACE("A test message: %f", 3.14f);
 
     platform_state state;
-    if(platform_startup(&state, "VulkanEngineTest", 100, 100, 1280, 720)) 
-    {
-        while(TRUE)
+    if(platform_startup(&state, "Vulkan Engine 3D Testbed", 100, 100, 1280, 720)) {
+        while(TRUE) {
             platform_pump_messages(&state);
+        }
     }
     platform_shutdown(&state);
 
