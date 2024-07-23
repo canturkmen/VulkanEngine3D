@@ -180,12 +180,52 @@ b8 platform_pump_messages(platform_state* plat_state)
     xcb_generic_event_t *event;
     xcb_client_message_event_t *cm;
 
+    b8 quit_flagged = FALSE;
+
+    // Poll for events until null is returned.
     while(event != 0)
     {
         event = xcb_poll_for_event(state->connection);
         if(event == 0)
             break;
+
+        // Input events.
+        switch(event->response_type & ~0x80)
+        {
+            case XCB_KEY_PRESS:
+            case XCB_KEY_RELEASE: 
+            {
+                // TODO: Key presses and releases.
+            }
+            break;
+            case XCB_BUTTON_PRESS:
+            case XCB_BUTTON_RELEASE: 
+            {
+                // TODO: Mouse button presses and releases.
+            }
+            case XCB_MOTION_NOTIFY:
+                // TODO: Mouse movement.
+                break;
+            case XCB_CONFIGURE_NOTIFY:
+            {
+                // TODO: Resizing 
+            }
+            case XCB_CLIENT_MESSAGE:
+            {
+                cm = (xcb_client_message_event_t *)event;
+
+                // Window close
+                if (cm->data.data32[0] == state->wm_delete_win)
+                    quit_flagged = TRUE;
+            }
+            break;
+            default:
+                // Something else
+                break;
+        }
+        free(event);
     }
+    return !quit_flagged;
 }
 
 void* platform_allocate(u64 size, b8 aligned)
@@ -211,6 +251,41 @@ void* platform_copy_memory(void* dest, const void* src, u64 size)
 void* platform_set_memory(void* block, i32 value, u64 size)
 {
     return memset(block, value, size);
+}
+
+void platform_console_write(const char* message, u8 colour)
+{
+    // FATAL, ERROR, WARN, INFO, DEBUG ,TRACE
+    const char* colour_strings[] = {"0;41", "1;31", "1;33", "1;32", "1;34", "1;30"};
+    printf("\033[%sm%s\033[0m", colour_strings[colour], message);
+}
+
+void platform_console_write_error(const char* message, u8 colour)
+{
+    // FATAL, ERROR, WARN, INFO, DEBUG ,TRACE
+    const char* colour_strings[] = {"0;41", "1;31", "1;33", "1;32", "1;34", "1;30"};
+    printf("\033[%sm%s\033[0m", colour_strings[colour], message);
+}
+
+f64 platform_get_absolute_time() 
+{
+    struct timespec now;
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    return now.tv_sec + now.tv_nsec * 0.000000001
+}
+
+void platform_sleep(u64 ms)
+{
+    #if _POSIX_C_SOURCE >= 199309L
+        struct timespec ts;
+        ts.tv_sec = ms / 1000;
+        ts.tv_nsec = (ms % 1000) * 1000 * 1000,
+        nanosleep(&ts, 0);
+    #else
+        if(ms >= 1000)
+            sleep(ms / 1000);
+        usleep((ms % 1000) * 1000);
+    #endif
 }
 
 #endif 
