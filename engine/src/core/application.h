@@ -2,6 +2,8 @@
 
 #include "defines.h"
 
+struct game;
+
 // Application configuration.
 typedef struct application_config
 {
@@ -21,6 +23,6 @@ typedef struct application_config
     char* name;
 } application_config;
 
-__declspec(dllexport) b8 application_create(application_config* config);
+__declspec(dllexport) b8 application_create(struct game* game_instance);
 
 __declspec(dllexport) b8 application_run();
