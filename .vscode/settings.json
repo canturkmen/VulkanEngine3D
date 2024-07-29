@@ -62,6 +62,7 @@
         "logger.h": "c",
         "platform.h": "c",
         "stdlib.h": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "array": "cpp"
     }
 }
