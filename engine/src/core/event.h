@@ -89,13 +89,7 @@ typedef enum system_event_code
     /* Context usage:
      * u16 button = data.data.u16[0];
      */
-    EVENT_CODE_BUTTON_PRESSED = 0x05,
-
-    // Mouse button released.
-    /* Context usage:
-     * u16 button = data.data.u16[0];
-     */
-    EVENT_CODE_BUTTON_PRESSED = 0x05,
+    EVENT_CODE_BUTTON_RELEASED = 0x05,
     
     // Mouse moved.
     /* Context usage:

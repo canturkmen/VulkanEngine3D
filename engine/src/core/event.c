@@ -27,3 +27,4 @@ typedef struct event_system_state
  */
 static b8 initialized = FALSE;
 static event_system_state state;
+

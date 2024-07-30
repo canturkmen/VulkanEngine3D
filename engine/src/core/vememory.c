@@ -76,7 +76,7 @@ void* vezero_memory(void* block, u64 size)
 {
     return platform_zero_memory(block, size);
 }
-
+    
 void* vecopy_memory(void* dest, const void* source, u64 size)
 {
     return platform_copy_memory(dest, source, size);
