@@ -63,6 +63,21 @@
         "platform.h": "c",
         "stdlib.h": "c",
         "time.h": "c",
-        "array": "cpp"
+        "array": "cpp",
+        "utility": "cpp",
+        "xutility": "cpp",
+        "compare": "cpp",
+        "format": "cpp",
+        "memory": "cpp",
+        "ratio": "cpp",
+        "tuple": "cpp",
+        "xmemory": "cpp",
+        "xstring": "cpp",
+        "xtr1common": "cpp",
+        "algorithm": "c",
+        "functional": "c",
+        "expected": "c",
+        "optional": "c",
+        "xlocmon": "c"
     }
 }

@@ -47,7 +47,7 @@ __declspec(dllexport) void* _darray_insert_at(void* array, u64 index, void* valu
 #define darray_push(array, value)          \
     {                                      \
        typeof(value) temp = value;         \
-       array = _darray_push(array, &temp;) \
+       array = _darray_push(array, &temp); \
     }                                      
 
 #define darray_pop(array, value_ptr) \
@@ -56,7 +56,7 @@ __declspec(dllexport) void* _darray_insert_at(void* array, u64 index, void* valu
 #define darray_insert_at(array, index, value)             \
     {                                                     \
        typeof(value) temp = value;                        \
-       array = _darray_insert_at(array, index, &temp;)    \
+       array = _darray_insert_at(array, index, &temp);    \
     }                                  
 
 #define darray_pop_at(array, index, value_ptr) \
