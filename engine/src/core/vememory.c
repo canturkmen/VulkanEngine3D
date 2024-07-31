@@ -2,6 +2,7 @@
 
 #include "core/logger.h"
 #include "platform/platform.h"
+#include "core/vestring.h"
 
 // TODO: Custom string lib.
 #include <string.h>
@@ -76,7 +77,7 @@ void* vezero_memory(void* block, u64 size)
 {
     return platform_zero_memory(block, size);
 }
-    
+
 void* vecopy_memory(void* dest, const void* source, u64 size)
 {
     return platform_copy_memory(dest, source, size);
@@ -125,6 +126,6 @@ char* get_memory_usage_str()
         offset += length;
     }
 
-    char* out_string = _strdup(buffer);
+    char* out_string = string_duplicate(buffer);
     return out_string;
 }
