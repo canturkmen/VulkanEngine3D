@@ -78,6 +78,7 @@
         "functional": "c",
         "expected": "c",
         "optional": "c",
-        "xlocmon": "c"
+        "xlocmon": "c",
+        "event.h": "c"
     }
 }
