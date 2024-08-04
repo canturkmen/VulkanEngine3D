@@ -41,7 +41,7 @@ void* _darray_resize(void* array)
     u64 stride = darray_stride(array);
     void* temp = _darray_create((DARRAY_RESIZE_FACTOR * darray_capacity(array)), stride);
     vecopy_memory(temp, array, length * stride);
-    _darray_field_set(temp, DARRAY_FIELD_LENGTH, length);
+    _darray_field_set(temp, DARRAY_LENGTH, length);
     _darray_destroy(array);
     return temp;
 }
@@ -53,7 +53,7 @@ void* _darray_push(void* array, const void* value_ptr)
     if(length >= darray_capacity(array))
         array = _darray_resize(array);
     u64 addr = (u64)array;
-    addr += length * stride;
+    addr += (length * stride);
     vecopy_memory((void*)addr, value_ptr, stride);
     _darray_field_set(array, DARRAY_LENGTH, length + 1);
     return array;

@@ -79,6 +79,8 @@
         "expected": "c",
         "optional": "c",
         "xlocmon": "c",
-        "event.h": "c"
+        "event.h": "c",
+        "vector": "c",
+        "asserts.h": "c"
     }
 }

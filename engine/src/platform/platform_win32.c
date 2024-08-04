@@ -6,6 +6,8 @@
 #include "core/logger.h"
 #include "core/input.h"
 
+#include "containers/darray.h"
+
 #include <windows.h>
 #include <windowsx.h> // Param input extraction
 #include <stdlib.h>
@@ -185,6 +187,11 @@ f64 platform_get_absolute_time()
     LARGE_INTEGER now_time;
     QueryPerformanceCounter(&now_time);
     return (f64)now_time.QuadPart * clock_frequency;
+}
+
+void platform_get_required_extension_names(const char*** names_darray)
+{
+    darray_push(*names_darray, &"VK_KHR_win32_surface");
 }
 
 void platform_sleep(u64 ms)
