@@ -8,6 +8,7 @@
 #include "containers/darray.h"
 
 #include "vulkan_platform.h"
+#include "vulkan_device.h"
 
 // Static Vulkan Context.
 static vulkan_context context;
@@ -118,7 +119,22 @@ b8 vulkan_renderer_backend_initialize(struct renderer_backend* backend, const ch
     VEASSERT_MSG(func, "Failed to create debug messenger!");
     VK_CHECK(func(context.instance, &debug_create_info, context.allocator, &context.debug_messenger));
     VEDEBUG("Vulkan debugger created.");
-#endif                                                                  
+#endif                    
+
+    // Surface Creation.
+    VEDEBUG("Creating Vulkan surface...");
+    if(!platform_create_vulkan_surface(plat_state, &context))
+    {
+        VEERROR("Failed to create platform surface!");
+        return FALSE;
+    }
+
+    // Device creation.
+    if(!vulkan_device_create(&context))
+    {
+        VEERROR("Failed to create device!");
+        return FALSE;
+    }
 
     VEINFO("Vulkan Renderer initalized succesfully.");
     return TRUE;
