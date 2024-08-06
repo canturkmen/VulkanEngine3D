@@ -92,11 +92,11 @@ void vulkan_device_query_swapchain_support(
         if(!out_support_info->present_modes)
             out_support_info->present_modes = veallocate(sizeof(VkPresentModeKHR) * out_support_info->present_mode_count, MEMORY_TAG_RENDERER);
         
-        VK_CHECK(vkGetPhysicalDeviceSurfaceFormatsKHR(
+        VK_CHECK(vkGetPhysicalDeviceSurfacePresentModesKHR(
         physical_device,
         surface,
         &out_support_info->present_mode_count,
-        &out_support_info->present_modes));
+        out_support_info->present_modes));
     }
 }
 
@@ -185,6 +185,12 @@ b8 select_physical_device(vulkan_context* context)
             for(u32 j = 0; j < memory.memoryHeapCount; ++j)
             {
                 f32 memory_size_gib = (((f32)memory.memoryHeaps[j].size) / 1024.0f / 1024.0f / 1024.0f);
+
+                if(memory.memoryHeaps[j].flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT) {
+                    VEINFO("Local GPU memory: %.2f GiB", memory_size_gib);
+                }
+                else 
+                    VEINFO("Shared System memory: %.2f GiB", memory_size_gib);
             }
 
             context->device.physical_device = physical_devices[i];
@@ -279,7 +285,7 @@ b8 physical_device_meets_requirements(
     }
 
     // Print out some information about the device.
-    KINFO("     %d |        %d |        %d |        %d | %s", 
+    VEINFO("     %d |        %d |        %d |        %d | %s", 
         out_queue_family_info->graphics_family_index != -1,
         out_queue_family_info->present_family_index != -1,
         out_queue_family_info->compute_family_index != - 1,
@@ -292,11 +298,11 @@ b8 physical_device_meets_requirements(
     (!requirements->compute || (requirements->compute && out_queue_family_info->compute_family_index != -1)) &&
     (!requirements->transfer || (requirements->transfer && out_queue_family_info->transfer_family_index != -1)))
     {
-        KINFO("Device meets queue requirements.");
-        KTRACE("Graphics Family Index: %i", out_queue_family_info->graphics_family_index);
-        KTRACE("Present Family Index: %i", out_queue_family_info->present_family_index);
-        KTRACE("Transfer Family Index: %i", out_queue_family_info->transfer_family_index);
-        KTRACE("Compute Family Index: %i", out_queue_family_info->compute_family_index);
+        VEINFO("Device meets queue requirements.");
+        VETRACE("Graphics Family Index: %i", out_queue_family_info->graphics_family_index);
+        VETRACE("Present Family Index: %i", out_queue_family_info->present_family_index);
+        VETRACE("Transfer Family Index: %i", out_queue_family_info->transfer_family_index);
+        VETRACE("Compute Family Index: %i", out_queue_family_info->compute_family_index);
 
         // Query swapchain support.
         vulkan_device_query_swapchain_support(device, surface, out_swapchain_support);

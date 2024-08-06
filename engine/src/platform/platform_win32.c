@@ -211,7 +211,7 @@ b8 platform_create_vulkan_surface(platform_state* plat_state, vulkan_context* co
     // Simply cold-cast to the known type.
     internal_state* state = (internal_state*)plat_state->internal_state;
 
-    VkWin32SurfaceCreationInfoKHR create_info = {VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR};
+    VkWin32SurfaceCreateInfoKHR create_info = {VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR};
     create_info.hinstance = state->h_instance;
     create_info.hwnd = state->hwnd;
 
