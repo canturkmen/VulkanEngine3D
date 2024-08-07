@@ -1,6 +1,7 @@
 #include "vulkan_swapchain.h"
 
 #include "vulkan_device.h"
+#include "vulkan_image.h"
 
 #include "core/logger.h"
 #include "core/vememory.h"
@@ -157,9 +158,79 @@ void create(vulkan_context* context, u32 width, u32 height, vulkan_swapchain* sw
         swapchain_create_info.queueFamilyIndexCount = 0;
         swapchain_create_info.pQueueFamilyIndices = 0;
     }
-}
 
+    swapchain_create_info.preTransform = context->device.swapchain_support.capabilities.currentTransform;
+    swapchain_create_info.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+    swapchain_create_info.presentMode = present_mode;
+    swapchain_create_info.clipped = VK_TRUE;
+    swapchain_create_info.oldSwapchain = 0; 
+
+    VK_CHECK(vkCreateSwapchainKHR(context->device.logical_device, &swapchain_create_info, context->allocator, &swapchain->handle));
+
+    // Start with a zero frame index.
+    context->current_frame = 0;
+
+    // Images 
+    swapchain->image_count = 0;
+    VK_CHECK(vkGetSwapchainImagesKHR(context->device.logical_device, swapchain->handle, &swapchain->image_count, 0));
+
+    if(!swapchain->images)
+        swapchain->images = (VkImage*)veallocate(sizeof(VkImage) * swapchain->image_count, MEMORY_TAG_RENDERER);
+    
+    if(!swapchain->views)
+        swapchain->views = (VkImageView*)veallocate(sizeof(VkImageView) * swapchain->image_count, MEMORY_TAG_RENDERER);
+
+    VK_CHECK(vkGetSwapchainImagesKHR(context->device.logical_device, swapchain->handle, &swapchain->image_count, swapchain->images));
+
+    // Views
+    for(u32 i = 0; i < swapchain->image_count; ++i)
+    {
+        VkImageViewCreateInfo view_info = {VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
+        view_info.image = swapchain->images[i];
+        view_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        view_info.format = swapchain->image_format.format;
+        view_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        view_info.subresourceRange.baseMipLevel = 0;
+        view_info.subresourceRange.levelCount = 1;
+        view_info.subresourceRange.baseArrayLayer = 0;
+        view_info.subresourceRange.layerCount = 1;
+
+        VK_CHECK(vkCreateImageView(context->device.logical_device, &view_info, context->allocator, &swapchain->views[i]));
+    }
+
+    // Depth resources.
+    if(!vulkan_device_detect_depth_format(&context->device))
+    {
+        context->device.depth_format = VK_FORMAT_UNDEFINED;
+        VEFATAL("Failed to find a depth format!");
+    }
+
+    // Create depth image 
+    vulkan_image_create(
+        context, 
+        VK_IMAGE_TYPE_2D, 
+        swapchain_extent.width, 
+        swapchain_extent.height, 
+        context->device.depth_format, 
+        VK_IMAGE_TILING_OPTIMAL, 
+        VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 
+        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 
+        TRUE,
+        VK_IMAGE_ASPECT_DEPTH_BIT, 
+        &swapchain->depth_attachment);
+
+    VEINFO("Swapchain created successfully.");
+}
+ 
 void destroy(vulkan_context* context, vulkan_swapchain* swapchain)
 {
+    vulkan_image_destroy(context, &swapchain->depth_attachment);
 
+    // Only destroy the views, not the images, since those are owned by the swapchain and are thus
+    // destroyed when it is.
+
+    for(u32 i = 0; i < swapchain->image_count; ++i)
+        vkDestroyImageView(context->device.logical_device, swapchain->views[i], context->allocator);
+
+    vkDestroySwapchainKHR(context->device.logical_device, swapchain->handle, context->allocator);
 }

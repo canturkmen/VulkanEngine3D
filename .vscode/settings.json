@@ -81,6 +81,7 @@
         "xlocmon": "c",
         "event.h": "c",
         "vector": "c",
-        "asserts.h": "c"
+        "asserts.h": "c",
+        "vememory.h": "c"
     }
 }
