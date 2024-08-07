@@ -39,8 +39,24 @@ typedef struct vulkan_device
     VkPhysicalDeviceMemoryProperties memory;
 } vulkan_device;
 
+typedef struct vulkan_swapchain
+{
+    VkSurfaceFormatKHR image_format;
+    u8 max_frames_in_flight;
+    VkSwapchainKHR handle;
+    u32 image_count;
+    VkImage* images;
+    VkImageView* views;
+} vulkan_swapchain;
+
 typedef struct vulkan_context
 {
+    // The framebuffer's current width.
+    u32 framebuffer_width;
+
+    // The framebuffer's current height.
+    u32 framebuffer_height;
+
     VkInstance instance;
     VkAllocationCallbacks* allocator;
     VkSurfaceKHR surface;
@@ -50,4 +66,5 @@ typedef struct vulkan_context
 #endif
 
     vulkan_device device;
+
 } vulkan_context;
