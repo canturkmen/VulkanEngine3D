@@ -9,7 +9,7 @@ typedef unsigned long long u64;
 // Signed int types.
 typedef signed char i8;
 typedef signed short i16;
-typedef signed int i32;
+typedef signed int i32; 
 typedef signed long long i64;
 
 // Floating point types.

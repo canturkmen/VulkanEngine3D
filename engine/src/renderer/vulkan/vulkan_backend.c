@@ -10,6 +10,7 @@
 #include "vulkan_platform.h"
 #include "vulkan_device.h"
 #include "vulkan_swapchain.h"
+#include "vulkan_renderpass.h"
 
 // Static Vulkan Context.
 static vulkan_context context;
@@ -147,11 +148,21 @@ b8 vulkan_renderer_backend_initialize(struct renderer_backend* backend, const ch
     // Swapchain.
     vulkan_swapchain_create(&context, context.framebuffer_width, context.framebuffer_height, &context.swapchain);    
 
+    vulkan_renderpass_create(
+        &context, 
+        &context.main_renderpass, 
+        0, 0, context.framebuffer_width, context.framebuffer_height, 
+        0.0f, 0.0f, 0.2f, 1.0f, 
+        1.0f, 
+        0);
+
     return TRUE;
 }
 
 void vulkan_renderer_backend_shutdown(struct renderer_backend* backend)
 {
+    vulkan_renderpass_destroy(&context, &context.main_renderpass);
+
     vulkan_swapchain_destroy(&context, &context.swapchain);
 
     VEDEBUG("Destroying Vulkan device...");
