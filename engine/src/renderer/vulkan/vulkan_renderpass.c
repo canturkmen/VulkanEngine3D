@@ -10,6 +10,19 @@ void vulkan_renderpass_create(
     f32 depth,
     f32 stencil)
 {
+    out_renderpass->x = x;
+    out_renderpass->y = y;
+    out_renderpass->w = w;
+    out_renderpass->h = h;
+
+    out_renderpass->r = r;
+    out_renderpass->g = g;
+    out_renderpass->b = b;
+    out_renderpass->a = a;
+
+    out_renderpass->depht = depth;
+    out_renderpass->stencil = stencil;
+
     // Main subpass.
     VkSubpassDescription subpass = {};
     subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;

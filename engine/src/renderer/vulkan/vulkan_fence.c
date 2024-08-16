@@ -24,7 +24,7 @@ void vulkan_fence_destroy(vulkan_context* context, vulkan_fence* fence)
     fence->is_signaled = FALSE;
 }
 
-b8 vulkan_fence_wait(vulkan_context* context, vulkan_fence* fence, f64 timeout_ns)
+b8 vulkan_fence_wait(vulkan_context* context, vulkan_fence* fence, u64 timeout_ns)
 {
     if(!fence->is_signaled)
     {

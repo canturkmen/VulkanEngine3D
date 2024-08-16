@@ -82,6 +82,7 @@
         "event.h": "c",
         "vector": "c",
         "asserts.h": "c",
-        "vememory.h": "c"
+        "vememory.h": "c",
+        "vulkan_command_buffer.h": "c"
     }
 }
