@@ -7,7 +7,7 @@
 // Backend render context.
 static renderer_backend* backend = 0; 
 
-b8 renderer_initalize(const char* application_name, struct platform_state* plat_state)
+b8 renderer_initialize(const char* application_name, struct platform_state* plat_state)
 {
     backend = veallocate(sizeof(renderer_backend), MEMORY_TAG_RENDERER);
     
@@ -40,6 +40,14 @@ b8 renderer_end_frame(f32 delta_time)
     b8 result = backend->end_frame(backend, delta_time);
     backend->frame_number++;
     return result;
+}
+
+void renderer_on_resized(u16 width, u16 height)
+{
+    if(backend)
+        backend->resized(backend, width, height);
+    else
+        VEWARN("Renderer backend does not exist to accept resize: %i,  %i", width, height);
 }
 
 b8 renderer_draw_frame(render_packet* packet)

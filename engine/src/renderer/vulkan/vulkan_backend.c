@@ -293,7 +293,7 @@ void vulkan_renderer_backend_on_resized(struct renderer_backend* backend, u16 wi
     cached_framebuffer_height = height;
     context.framebuffer_size_generation++;
 
-    VEINFO("Vulkan renderer backend->resized: w/h/gen: %i%i%llu", width, height, context.framebuffer_size_generation);
+    VEINFO("Vulkan renderer backend->resized: w/h/gen: %i/%i/%llu", width, height, context.framebuffer_size_generation);
 }
 
 b8 vulkan_renderer_backend_begin_frame(struct renderer_backend* backend, f32 delta_time)
