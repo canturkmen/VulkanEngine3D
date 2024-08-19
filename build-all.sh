@@ -4,21 +4,27 @@ set echo on
 
 ECHO "Building everything..."
 
-pushd engine
-source build.sh
-popd
+# pushd engine
+# source build.sh
+# popd
+
+make -f Makefile.engine.linux.mak all
+
 ERRORLEVEL=$?
 if  [$ERRORLEVEL -ne 0]
 then
 echo "Error:"$ERRORLEVEL && exit
 fi
 
-pushd test
-source build.sh
-popd
+# pushd test
+# source build.sh
+# popd
+
+make -f Makefile.test.linux.mak all
+
 ERRORLEVEL=$?
 if [$ERRORLEVEL -ne 0]
-then
+then 
 echo "Error:"$ERRORLEVEL && exit
 fi
 
