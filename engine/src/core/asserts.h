@@ -13,7 +13,7 @@
 #define debugBreak() __builtin_trap()
 #endif
 
-__declspec(dllexport) void report_assertion_failure(const char* expression, const char* message, const char* file, i32 line);
+VEAPI void report_assertion_failure(const char* expression, const char* message, const char* file, i32 line);
 
 #define VEASSERT(expr)                                                        \
     {                                                                         \

@@ -150,20 +150,20 @@ void input_shutdown();
 void input_update(f64 delta_time);
 
 // Keyboard input.
-__declspec(dllexport) b8 input_is_key_down(keys key);
-__declspec(dllexport) b8 input_is_key_up(keys key);
-__declspec(dllexport) b8 input_was_key_down(keys key);
-__declspec(dllexport) b8 input_was_key_down(keys key);
+VEAPI b8 input_is_key_down(keys key);
+VEAPI b8 input_is_key_up(keys key);
+VEAPI b8 input_was_key_down(keys key);
+VEAPI b8 input_was_key_down(keys key);
 
 void input_process_key(keys key, b8 pressed);
 
 // Mouse input.
-__declspec(dllexport) b8 input_is_buttony_down(buttons button);
-__declspec(dllexport) b8 input_is_button_up(buttons button);
-__declspec(dllexport) b8 input_was_button_down(buttons button);
-__declspec(dllexport) b8 input_was_button_down(buttons button);
-__declspec(dllexport) void input_get_mouse_position(i32* x, i32* y);
-__declspec(dllexport) void input_get_previous_mouse_position(i32* x, i32* y);
+VEAPI b8 input_is_buttony_down(buttons button);
+VEAPI b8 input_is_button_up(buttons button);
+VEAPI b8 input_was_button_down(buttons button);
+VEAPI b8 input_was_button_down(buttons button);
+VEAPI void input_get_mouse_position(i32* x, i32* y);
+VEAPI void input_get_previous_mouse_position(i32* x, i32* y);
 
 void input_process_button(buttons button, b8 is_pressed);
 void input_process_mouse_move(i16 x, i16 y);

@@ -23,8 +23,8 @@ typedef struct application_config
     char* name;
 } application_config;
 
-__declspec(dllexport) b8 application_create(struct game* game_instance);
+VEAPI b8 application_create(struct game* game_instance);
 
-__declspec(dllexport) b8 application_run();
+VEAPI b8 application_run();
 
 void application_get_framebuffer_size(u32* width, u32* height);

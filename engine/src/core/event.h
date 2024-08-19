@@ -39,7 +39,7 @@ void event_shutdown();
  * @param on_event The callback function pointer to be invoked when the event code is fired.
  * @returns TRUE if the event is succesfully registered; otherwise false.
  */
-__declspec(dllexport) b8 event_register(u16 code, void* listener, PFN_on_event on_event);
+VEAPI b8 event_register(u16 code, void* listener, PFN_on_event on_event);
 
 /**
  * Unregister from listening for when events are sent with the provided code. If no matching
@@ -49,7 +49,7 @@ __declspec(dllexport) b8 event_register(u16 code, void* listener, PFN_on_event o
  * @param on_event The callback function pointer to be unregistered .
  * @returns TRUE if handled, otherwise false.
  */ 
-__declspec(dllexport) b8 event_unregister(u16 code, void* listener, PFN_on_event);
+VEAPI b8 event_unregister(u16 code, void* listener, PFN_on_event);
 
 /**
  * Fires an event to the listeners of the given code. If an event handler returns
@@ -59,7 +59,7 @@ __declspec(dllexport) b8 event_unregister(u16 code, void* listener, PFN_on_event
  * @param data The event data.
  * @returns TRUE if handled, otherwise FALSE..
  */
-__declspec(dllexport) b8 event_fire(u16 code, void* sender, event_context context);
+VEAPI b8 event_fire(u16 code, void* sender, event_context context);
 
 // System internal event codes. Application should use codes beyond 255.
 typedef enum system_event_code 

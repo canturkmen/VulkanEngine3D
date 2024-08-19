@@ -24,7 +24,7 @@ typedef enum log_level {
 b8 initialize_logging();
 void shutdown_logging();
 
-__declspec(dllexport) void log_output(log_level level, const char* message, ...);
+VEAPI void log_output(log_level level, const char* message, ...);
 
 // Logs a fatal-level message
 #define VEFATAL(message, ...) log_output(LOG_LEVEL_FATAL, message, ##__VA_ARGS__);
