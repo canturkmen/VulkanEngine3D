@@ -83,6 +83,7 @@
         "vector": "c",
         "asserts.h": "c",
         "vememory.h": "c",
-        "vulkan_command_buffer.h": "c"
+        "vulkan_command_buffer.h": "c",
+        "span": "cpp"
     }
 }
