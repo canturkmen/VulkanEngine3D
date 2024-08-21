@@ -18,10 +18,10 @@ b8 renderer_initialize(const char* application_name, struct platform_state* plat
     if(!backend->initialize(backend, application_name, plat_state))
     {
         VEFATAL("Renderer backend failed to initalize. Shutting down.");
-        return FALSE;
+        return false;
     } 
 
-    return TRUE;
+    return true;
 }
 
 void renderer_shutdown()
@@ -60,9 +60,9 @@ b8 renderer_draw_frame(render_packet* packet)
         if(!result)
         {
             VEERROR("renderer_end_frame failed. Application shuttting down...");
-            return FALSE;
+            return false;
         }
     }
 
-    return TRUE;
+    return true;
 }   

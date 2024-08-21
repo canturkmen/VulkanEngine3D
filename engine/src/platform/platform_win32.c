@@ -59,7 +59,7 @@ b8 platform_startup(
     if(!RegisterClassA(&wc)) 
     {
         MessageBoxA(0, "Window registration failed", "Error", MB_ICONEXCLAMATION | MB_OK);
-        return FALSE;
+        return false;
     }
 
     // Create window.
@@ -100,7 +100,7 @@ b8 platform_startup(
     {
         MessageBoxA(NULL, "Window creation failed!", "Error!", MB_ICONEXCLAMATION | MB_OK);
         VEFATAL("Window creation failed");
-        return FALSE;
+        return false;
     } 
     else 
         state->hwnd = handle;  
@@ -115,7 +115,7 @@ b8 platform_startup(
     clock_frequency = 1.0 / (f64)frequency.QuadPart;
     QueryPerformanceCounter(&start_time);
 
-    return TRUE;
+    return true;
 }
 
 void platform_shutdown(platform_state* plat_state) 
@@ -137,7 +137,7 @@ b8 platform_pump_messages(platform_state* plat_state)
         DispatchMessage(&message);
     }
 
-    return TRUE;
+    return true;
 }
 
 void* platform_allocate(u64 size, b8 aligned)
@@ -220,11 +220,11 @@ b8 platform_create_vulkan_surface(platform_state* plat_state, vulkan_context* co
     if(result != VK_SUCCESS)
     {
         VEFATAL("Vulkan surface creation failed.");
-        return FALSE;   
+        return false;   
     }
 
     context->surface = state->surface;
-    return TRUE;
+    return true;
 }
 
 LRESULT CALLBACK win32_process_message(HWND hwnd, u32 msg, WPARAM w_param, LPARAM l_param)
@@ -238,7 +238,7 @@ LRESULT CALLBACK win32_process_message(HWND hwnd, u32 msg, WPARAM w_param, LPARA
             // TODO: Fire an event for the application to quit.
             event_context data = {};
             event_fire(EVENT_CODE_APPLICATION_QUIT, 0, data);
-            return TRUE;
+            return true;
         case WM_DESTROY:
         {
             PostQuitMessage(0);
@@ -268,6 +268,29 @@ LRESULT CALLBACK win32_process_message(HWND hwnd, u32 msg, WPARAM w_param, LPARA
             // Key pressed/released.
             b8 pressed = (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN);
             keys key = (u16)w_param;
+
+            // Alt key.
+            if(w_param == VK_MENU)
+            {
+                if(GetKeyState(VK_RMENU) & 0x8000)
+                    key = KEY_RALT;
+                else if(GetKeyState(VK_LMENU) & 0x8000)
+                    key = KEY_LALT;
+            }
+            else if(w_param == VK_SHIFT)
+            {
+                if(GetKeyState(VK_RSHIFT) & 0x8000)
+                    key = KEY_RSHIFT;
+                else if(GetKeyState(VK_LSHIFT) & 0x8000)
+                    key = KEY_LSHIFT;
+            }
+            else if(w_param == VK_CONTROL)
+            {
+                if(GetKeyState(VK_RCONTROL) & 0x8000)
+                    key = KEY_RCONTROL;
+                else if(GetKeyState(VK_LCONTROL) & 0x8000)
+                    key = KEY_LCONTROL;
+            }
             
             // Pass the input subsystem for processing.
             input_process_key(key, pressed);
