@@ -10,10 +10,10 @@ typedef struct clock
 
 // Updated the provided clock.
 // Has no effect on non-started clocks.
-void clock_update(clock* clock);
+VEAPI void clock_update(clock* clock);
 
 // Starts the provided clock. Resets elapsed time.
-void clock_start(clock* clock);
+VEAPI void clock_start(clock* clock);
 
 // Stops the provided clock. Does not reset elapsed time.
-void clock_stop(clock* clock);
+VEAPI void clock_stop(clock* clock);

@@ -20,7 +20,7 @@
         },
         {
             "type": "shell",
-            "label": "Build Testbed",
+            "label": "Build Test",
             "windows": {
                 "command": "${workspaceFolder}/test/build.bat"
             },
@@ -29,6 +29,23 @@
             },
             "options": {
                 "cwd": "${workspaceFolder}/test"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build"
+        },
+        {
+            "type": "shell",
+            "label": "Build Unit Tests",
+            "windows": {
+                "command": "${workspaceFolder}/tests/build.bat"
+            },
+            "linux": {
+                "command": "${workspaceFolder}/tests/build.sh"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}/tests"
             },
             "problemMatcher": [
                 "$gcc"
@@ -82,7 +99,7 @@
                 "cwd": "${workspaceFolder}"
             },
             "group": "build"
-        }
+        },
     ],
     "version": "2.0.0"
 }

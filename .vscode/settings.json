@@ -84,6 +84,7 @@
         "asserts.h": "c",
         "vememory.h": "c",
         "vulkan_command_buffer.h": "c",
-        "span": "cpp"
+        "span": "cpp",
+        "linear_allocator_tests.h": "c"
     }
 }
