@@ -13,13 +13,15 @@ b8 create_game(game* out_game)
     out_game->app_config.start_pos_width = 1280;
     out_game->app_config.start_pos_height = 720 ;
     out_game->app_config.name = "Vulkan Engine 3D Test"; 
-    out_game->initialize = game_initalize;
+    out_game->initialize = game_initalize; 
     out_game->update = game_update;
     out_game->render = game_render;
     out_game->on_resize = game_on_resize;
 
     // Create the game state.
     out_game->state = veallocate(sizeof(game_state), MEMORY_TAG_GAME);
+
+    out_game->application_state = 0;
 
     return true;
 }

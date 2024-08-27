@@ -85,6 +85,7 @@
         "vememory.h": "c",
         "vulkan_command_buffer.h": "c",
         "span": "cpp",
-        "linear_allocator_tests.h": "c"
+        "linear_allocator_tests.h": "c",
+        "game_types.h": "c"
     }
 }

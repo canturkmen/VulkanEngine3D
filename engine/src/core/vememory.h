@@ -41,3 +41,5 @@ VEAPI void* vecopy_memory(void* dest, const void* source, u64 size);
 VEAPI void* veset_memory(void* dest, i32 value, u64 size);
 
 VEAPI char* get_memory_usage_str();
+
+VEAPI u64 get_memory_alloc_count();
