@@ -18,6 +18,9 @@
 #include "vulkan_fence.h"
 #include "vulkan_utils.h"
 
+// Shaders
+#include "shaders/vulkan_object_shader.h"
+
 // Static Vulkan Context.
 static vulkan_context context;
 static u32 cached_framebuffer_width = 0;
@@ -202,6 +205,13 @@ b8 vulkan_renderer_backend_initialize(struct renderer_backend* backend, const ch
     context.images_in_flight = darray_reserve(vulkan_fence, context.swapchain.image_count);
     for(u32 i = 0; i < context.swapchain.image_count; ++i)
         context.images_in_flight[i] = 0;
+
+    // Create buildin shaders.
+    if(!vulkan_object_shader_create(&context, &context.object_shader))
+    {
+        VEERROR("Error loading built-in basic_ligthing shader.")
+        return false;
+    }
 
     VEINFO("Vulkan Renderer initalized succesfully.");
     return true;

@@ -15,7 +15,7 @@ b8 game_update(game* game_inst, f32 delta_time)
     u64 prev_alloc_count = alloc_count;
     alloc_count = get_memory_alloc_count();
     if(input_is_key_up('M') && input_was_key_down('M'))
-        VEDEBUG("Allocations: %llu (%llu this frame", alloc_count, alloc_count - prev_alloc_count);
+        VEDEBUG("Allocations: %llu (%llu this frame)", alloc_count, alloc_count - prev_alloc_count);
 
     return true;
 }
