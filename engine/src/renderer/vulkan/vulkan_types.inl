@@ -126,7 +126,6 @@ typedef struct vulkan_shader_stage
     VkShaderModuleCreateInfo create_info;
     VkShaderModule handle;
     VkPipelineShaderStageCreateInfo shader_stage_create_info;
-
 } vulkan_shader_stage;
 
 typedef struct vulkan_pipeline
