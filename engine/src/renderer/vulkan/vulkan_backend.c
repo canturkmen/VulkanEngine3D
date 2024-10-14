@@ -42,6 +42,23 @@ void create_command_buffers(renderer_backend* backend);
 void regenerate_framebuffers(renderer_backend* backend, vulkan_swapchain* swapchain, vulkan_renderpass* renderpass);
 b8 recreate_swapchain(renderer_backend* backend);
 
+void upload_data_range(vulkan_context* context, VkCommandPool pool, VkFence fence, VkQueue queue, vulkan_buffer* buffer, u64 offset, u64 size, void* data)
+{
+    // Create a host-visible staging staging buffer to upload to. Mark it as the source of the transfer.
+    VkBufferUsageFlags flags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+    vulkan_buffer staging;
+    vulkan_buffer_create(context, size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, flags, true, &staging);
+
+    // Load the data into staging buffer.
+    vulkan_buffer_load_data(context, &staging, 0, size, 0, data);
+
+    // Perform the copy from staging to the device local buffer.
+    vulkan_buffer_copy_to(context, pool, fence, queue, staging.handle, 0, buffer->handle, offset, size);
+
+    // Clean up the staging buffer.
+    vulkan_buffer_destroy(context, &staging);
+}
+
 b8 vulkan_renderer_backend_initialize(struct renderer_backend* backend, const char* application_name, struct platform_state* plat_state)
 {   
     // Function pointers.
@@ -219,6 +236,48 @@ b8 vulkan_renderer_backend_initialize(struct renderer_backend* backend, const ch
 
     create_buffers(&context);    
 
+    // TODO: Temporary test code.
+    const u32 vert_count = 4;
+    vertex_3d verts[vert_count];
+    vezero_memory(verts, sizeof(vertex_3d) * vert_count);
+
+    verts[0].position.x = 0.0;
+    verts[0].position.y = -0.5;
+
+    verts[1].position.x = 0.5;
+    verts[1].position.y = 0.5;
+
+    verts[2].position.x = 0;
+    verts[2].position.y = 0.5;
+
+    verts[3].position.x = 0.5;
+    verts[3].position.y = -0.5;
+
+    const u32 index_count = 6;
+    u32 indices[index_count] = {0, 1, 2, 0, 3, 1};
+
+    upload_data_range(
+        &context, 
+        context.device.graphics_command_pool, 
+        0, 
+        context.device.graphics_queue, 
+        &context.object_vertex_buffer, 
+        0, 
+        sizeof(vertex_3d) * vert_count, 
+        verts);
+
+    upload_data_range(
+        &context,
+        context.device.graphics_command_pool,
+        0,
+        context.device.graphics_queue,
+        &context.object_index_buffer,
+        0,
+        sizeof(u32) * index_count,
+        indices);
+
+    // TODO: End temp code.
+
     VEINFO("Vulkan Renderer initalized succesfully.");
     return true;
 }
@@ -316,7 +375,7 @@ void vulkan_renderer_backend_on_resized(struct renderer_backend* backend, u16 wi
 
 b8 vulkan_renderer_backend_begin_frame(struct renderer_backend* backend, f32 delta_time)
 {
-    vulkan_device* device = &context.device;
+    vulkan_device* device = &context.device; 
 
     // Check if recreating swapchain and boot out.
     if(context.recreating_swapchain)
@@ -330,7 +389,7 @@ b8 vulkan_renderer_backend_begin_frame(struct renderer_backend* backend, f32 del
         VEINFO("Recreating swapchain, booting.");
         return false;
     }
-
+ 
     // Check if framebuffer has been resized. If so, a new swapchain must be created.
     if(context.framebuffer_size_generation != context.framebuffer_size_last_generation)
     {
@@ -399,6 +458,21 @@ b8 vulkan_renderer_backend_begin_frame(struct renderer_backend* backend, f32 del
         command_buffer,
         &context.main_renderpass,
         context.swapchain.framebuffers[context.image_index].handle);
+        
+    // TODO: Temporary test code.
+    vulkan_object_shader_use(&context, &context.object_shader);
+
+    // Bind vertex buffer at offset.
+    VkDeviceSize offsets[1] = {0};
+    vkCmdBindVertexBuffers(command_buffer->handle, 0, 1, &context.object_vertex_buffer.handle, (VkDeviceSize*)offsets);
+
+    // Bind index buffer at offset.
+    vkCmdBindIndexBuffer(command_buffer->handle, context.object_index_buffer.handle, 0, VK_INDEX_TYPE_UINT32);
+
+    // Issue the draw call.
+    vkCmdDrawIndexed(command_buffer->handle, 6, 1, 0, 0, 0);
+
+    // TODO: End temporary test code.
 
     return true;
 }
