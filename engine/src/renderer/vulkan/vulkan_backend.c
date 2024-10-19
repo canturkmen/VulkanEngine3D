@@ -38,7 +38,6 @@ VKAPI_ATTR VkBool32 VKAPI_CALL vk_debug_callback(
 i32 find_memory_index(u32 type_filter, u32 property_flags);
 b8 create_buffers(vulkan_context* context);
 
-
 void create_command_buffers(renderer_backend* backend);
 void regenerate_framebuffers(renderer_backend* backend, vulkan_swapchain* swapchain, vulkan_renderpass* renderpass);
 b8 recreate_swapchain(renderer_backend* backend);
@@ -60,7 +59,7 @@ void upload_data_range(vulkan_context* context, VkCommandPool pool, VkFence fenc
     vulkan_buffer_destroy(context, &staging);
 }
 
-b8 vulkan_renderer_backend_initialize(struct renderer_backend* backend, const char* application_name, struct platform_state* plat_state)
+b8 vulkan_renderer_backend_initialize(struct renderer_backend* backend, const char* application_name)
 {   
     // Function pointers.
     context.find_memory_index = find_memory_index;
@@ -173,7 +172,7 @@ b8 vulkan_renderer_backend_initialize(struct renderer_backend* backend, const ch
 
     // Surface Creation.
     VEDEBUG("Creating Vulkan surface...");
-    if(!platform_create_vulkan_surface(plat_state, &context))
+    if(!platform_create_vulkan_surface(&context))
     {
         VEERROR("Failed to create platform surface!");
         return false;

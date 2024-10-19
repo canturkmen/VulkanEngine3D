@@ -27,8 +27,8 @@ typedef enum memory_tag
     MEMORY_TAG_MAX_TAGS
 } memory_tag;
 
-VEAPI void initialize_memory();
-VEAPI void shutdown_memory();
+VEAPI void memory_system_initialize(u64* memory_requirement, void* state);
+VEAPI void memory_system_shutdown(void* state);
 
 VEAPI void* veallocate(u64 size, memory_tag tag);
 
