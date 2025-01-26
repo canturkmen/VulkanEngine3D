@@ -198,7 +198,4 @@ void vulkan_buffer_copy_to(
     copy_region.size = size;
 
     vkCmdCopyBuffer(temp_command_buffer.handle, source, dest, 1, &copy_region);
-
-    // Submit the buffer for execution and wait for it to complete.
-    vulkan_command_buffer_end_single_use(context, pool, &temp_command_buffer, queue);
 }
